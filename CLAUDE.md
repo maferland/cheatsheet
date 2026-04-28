@@ -4,9 +4,11 @@ Personal cheatsheet repo. The `cheat` bash script renders markdown cheats from t
 
 ## Adding a new cheat
 
-- For a tool/plugin: drop `<name>.md` at the repo root (e.g. `gs.md`, `fzf.md`).
-- To override or summarize a public repo's README: write `<author>/<repo>.md` (e.g. `mattpocock/skills.md`). Local always wins over the GitHub fetch.
-- For multi-page cheats: pair `<path>.md` (index) with `<path>/<sub>.md` (sub-pages). `cheat <path>` opens fzf over the index + sub-pages; `cheat <path>/<sub>` jumps straight in.
+All cheats live under `cheats/`. Repo metadata (`README.md`, `CLAUDE.md`, `LICENSE`, `.github/`) stays at the root.
+
+- For a tool/plugin: `cheats/<name>.md` (e.g. `cheats/gs.md`, `cheats/fzf.md`).
+- To override or summarize a public repo's README: `cheats/<author>/<repo>.md` (e.g. `cheats/mattpocock/skills.md`). Local always wins over the GitHub fetch.
+- For multi-page cheats: pair `cheats/<path>.md` (index) with `cheats/<path>/<sub>.md` (sub-pages). `cheat <path>` opens fzf over the index + sub-pages; `cheat <path>/<sub>` jumps straight in.
 
 Keep cheats tight — table of commands or a short list. Lead with the install/setup step. No marketing.
 
