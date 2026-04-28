@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+preview_cmd="bat --style=plain --color=always -l md $REPO/{}"
+
+list_md() {
+  cd "$REPO"
+  find . -path './.git' -prune -o -type f -name '*.md' -print | sed 's|^\./||'
+}
+
+find_local() {
+  local q="$1"
+  if [[ "$q" == */* ]]; then
+    [[ -f "$REPO/$q.md" ]] && { printf '%s\n' "$REPO/$q.md"; return 0; }
+    return 1
+  fi
+  local matches
+  matches=$(find "$REPO" -path '*/.git' -prune -o -type f -name "$q.md" -print)
+  local count
+  count=$(printf '%s' "$matches" | grep -c . || true)
+  case "$count" in
+    0) return 1 ;;
+    1) printf '%s\n' "$matches" ;;
+    *)
+      local pick
+      pick=$(printf '%s\n' "$matches" | sed "s|^$REPO/||" \
+        | fzf --preview "$preview_cmd") || return 1
+      [[ -z "$pick" ]] && return 1
+      printf '%s/%s\n' "$REPO" "$pick"
+      ;;
+  esac
+}
+
+fetch_readme() {
+  local repo="$1" tmp
+  tmp=$(mktemp -t cheat).md
+  if gh api "repos/$repo/readme" --jq .content 2>/dev/null \
+    | base64 -d > "$tmp" && [[ -s "$tmp" ]]; then
+    printf '%s\n' "$tmp"
+    return 0
+  fi
+  rm -f "$tmp"
+  return 1
+}
+
+render() {
+  bat --style=plain --paging=always -l md "$1"
+}
+
+if [[ $# -eq 0 ]]; then
+  pick=$(list_md | fzf --preview "$preview_cmd") || exit 0
+  [[ -n "${pick:-}" ]] && render "$REPO/$pick"
+  exit 0
+fi
+
+q="$1"
+if path=$(find_local "$q"); then
+  render "$path"
+elif [[ "$q" == */* ]] && path=$(fetch_readme "$q"); then
+  render "$path"
+  rm -f "$path"
+else
+  echo "Not found: $q" >&2
+  exit 1
+fi
