@@ -10,6 +10,8 @@ npx skills@latest add mattpocock/skills
 
 Pick the skills you want and which agents (Claude Code, Codex, etc.) to install them on.
 
+Drill in for any skill: `cheat mattpocock/skills/<name>` (e.g. `cheat mattpocock/skills/diagnose`). Or run `cheat mattpocock/skills` and pick from the fzf list.
+
 ## Skills
 
 ### Engineering

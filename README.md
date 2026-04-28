@@ -42,6 +42,18 @@ Drop markdown files anywhere in the repo. Two conventions:
 - `<name>.md` at the repo root for personal notes (e.g. `git.md`, `fzf.md`)
 - `<author>/<repo>.md` to override or annotate a public repo's README
 
+### Multi-page cheats
+
+Pair a `<path>.md` with a `<path>/` directory of sub-pages. `cheat <path>` opens an fzf picker over the index plus every sub-page; `cheat <path>/<sub>` jumps straight in.
+
+```
+mattpocock/
+├── skills.md            ← index
+└── skills/
+    ├── diagnose.md      ← cheat mattpocock/skills/diagnose
+    └── tdd.md           ← cheat mattpocock/skills/tdd
+```
+
 ## License
 
 [MIT](LICENSE)
