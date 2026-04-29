@@ -2,19 +2,20 @@
 set -euo pipefail
 
 REPO="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
+CHEATS="$REPO/cheats"
 
-preview_cmd="bat --style=plain --color=always -l md $REPO/{}"
+preview_cmd="bat --style=plain --color=always -l md $CHEATS/{}"
 
 list_md() {
-  cd "$REPO"
-  find . -path './.git' -prune -o -type f -name '*.md' -print | sed 's|^\./||'
+  cd "$CHEATS"
+  find . -type f -name '*.md' -print | sed 's|^\./||'
 }
 
 find_local() {
   local q="$1"
   if [[ "$q" != */* ]]; then
     local matches
-    matches=$(find "$REPO" -path '*/.git' -prune -o -type f -name "$q.md" -print)
+    matches=$(find "$CHEATS" -type f -name "$q.md" -print)
     local count
     count=$(printf '%s' "$matches" | grep -c . || true)
     case "$count" in
@@ -22,10 +23,10 @@ find_local() {
       1) printf '%s\n' "$matches" ;;
       *)
         local pick
-        pick=$(printf '%s\n' "$matches" | sed "s|^$REPO/||" \
+        pick=$(printf '%s\n' "$matches" | sed "s|^$CHEATS/||" \
           | fzf --preview "$preview_cmd") || return 1
         [[ -z "$pick" ]] && return 1
-        printf '%s/%s\n' "$REPO" "$pick"
+        printf '%s/%s\n' "$CHEATS" "$pick"
         ;;
     esac
     return 0
@@ -33,20 +34,20 @@ find_local() {
 
   # slashed path: combine <q>.md (index) and <q>/*.md (sub-pages) if either exists
   local matches=()
-  [[ -f "$REPO/$q.md" ]] && matches+=("$q.md")
-  if [[ -d "$REPO/$q" ]]; then
+  [[ -f "$CHEATS/$q.md" ]] && matches+=("$q.md")
+  if [[ -d "$CHEATS/$q" ]]; then
     while IFS= read -r f; do
-      matches+=("${f#"$REPO/"}")
-    done < <(find "$REPO/$q" -type f -name '*.md' | sort)
+      matches+=("${f#"$CHEATS/"}")
+    done < <(find "$CHEATS/$q" -type f -name '*.md' | sort)
   fi
   case "${#matches[@]}" in
     0) return 1 ;;
-    1) printf '%s\n' "$REPO/${matches[0]}" ;;
+    1) printf '%s\n' "$CHEATS/${matches[0]}" ;;
     *)
       local pick
       pick=$(printf '%s\n' "${matches[@]}" | fzf --preview "$preview_cmd") || return 1
       [[ -z "$pick" ]] && return 1
-      printf '%s\n' "$REPO/$pick"
+      printf '%s\n' "$CHEATS/$pick"
       ;;
   esac
 }
