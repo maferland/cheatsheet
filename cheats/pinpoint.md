@@ -5,10 +5,10 @@ Click pins / drag boxes on screenshots in a browser; structured JSON flows back 
 ## Install
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/maferland/pinpoint-mcp/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/maferland/pinpoint/main/install.sh | bash
 ```
 
-Restart Claude Code after install. Repo: `~/.pinpoint-mcp`.
+Restart Claude Code after install. Repo: `~/.pinpoint`.
 
 ## Daily flow
 
@@ -64,12 +64,12 @@ Bare "what do you think of this image?" makes Claude *describe* it instead. To f
 
 ## MCP back door (non-interactive)
 
-`pinpoint-mcp` server registered alongside. Tools: `create_review`, `add_image`, `get_annotations`, `list_reviews`. Use only when scripting — slash command is the happy path.
+`pinpoint` server registered alongside. Tools: `create_review`, `add_image`, `get_annotations`, `list_reviews`. Use only when scripting — slash command is the happy path.
 
 ## Dev
 
 ```bash
-cd ~/.pinpoint-mcp
+cd ~/.pinpoint
 bun install && bun run build
 bun test                  # 18 unit/integration tests
 verdict run               # 5 LLM-behavior tests for the skill
@@ -83,4 +83,4 @@ bun run dev               # watch mode
 - `pinpoint` must be on PATH — `bun link` from the repo root puts it in `~/.bun/bin/pinpoint`.
 - Don't mix MCP `create_review` with `/pinpoint-review` in the same session — different review IDs, separate stores.
 
-Upstream: <https://github.com/maferland/pinpoint-mcp>
+Upstream: <https://github.com/maferland/pinpoint>
